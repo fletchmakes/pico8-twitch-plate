@@ -12,62 +12,42 @@ var config = {
 		{
 			name: "l",
 			button: 0x1,
-			duration: 34
-		},
-		{
-			name: "ll",
-			button: 0x1,
-			duration: 1000
+			duration: 500
 		},
 		{
 			name: "r",
 			button: 0x2,
-			duration: 34
-		},
-		{
-			name: "rr",
-			button: 0x2,
-			duration: 1000
+			duration: 500
 		},
 		{
 			name: "u",
 			button: 0x4,
-			duration: 34
-		},
-		{
-			name: "uu",
-			button: 0x4,
-			duration: 1000
+			duration: 500
 		},
 		{
 			name: "d",
 			button: 0x8,
-			duration: 34
-		},
-		{
-			name: "dd",
-			button: 0x8,
-			duration: 1000
+			duration: 500
 		},
 		{
 			name: "ul",
 			button: 0x4 | 0x1,
-			duration: 34
+			duration: 500
 		},
 		{
 			name: "ur",
 			button: 0x4 | 0x2,
-			duration: 34
+			duration: 500
 		},
 		{
 			name: "dl",
 			button: 0x8 | 0x1,
-			duration: 34
+			duration: 500
 		},
 		{
 			name: "dr",
 			button: 0x8 | 0x2,
-			duration: 34
+			duration: 500
 		},
 	]
 };

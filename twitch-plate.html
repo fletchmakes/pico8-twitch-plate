@@ -1079,7 +1079,7 @@
       // ---------------------------------------------
       ComfyJS.onCommand = (user, command, message, flags, extra) => {
         var c = config.commands.find(obj => obj.name == command);
-
+        console.log(c);
         if (c !== undefined) {
           pico8_buttons[0] |= c.button;
           setTimeout(() => { pico8_buttons[0] &= ~(c.button) }, c.duration);
