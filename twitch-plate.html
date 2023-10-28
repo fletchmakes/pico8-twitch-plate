@@ -595,7 +595,7 @@
 
       }
       e.type = "application/javascript";
-      e.src = "twitch-test.js";
+      e.src = "##js_file##";
       e.id = "e_script";
 
       document.body.appendChild(e); // load and run
@@ -1078,14 +1078,11 @@
       // CONNECT TO TWITCH
       // ---------------------------------------------
       ComfyJS.onCommand = (user, command, message, flags, extra) => {
-        if (command == "left") {
-          pico8_buttons[0] |= 0x1;
-          setTimeout(() => { pico8_buttons[0] &= ~(0x1) }, 100);
-        }
+        var c = config.commands.find(obj => obj.name == command);
 
-        if (command == "right") {
-          pico8_buttons[0] |= 0x2;
-          setTimeout(() => { pico8_buttons[0] &= ~(0x2) }, 100);
+        if (c !== undefined) {
+          pico8_buttons[0] |= c.button;
+          setTimeout(() => { pico8_buttons[0] &= ~(c.button) }, c.duration);
         }
       }
       ComfyJS.Init(config.channel);
