@@ -9,8 +9,8 @@ end
 function _update()
 	if(btn(⬅️)) then
 		x -= 8
-		if (x <= -16) then
-			x = 112
+		if (x <= 0) then
+			x = 128
 		end
 	end
 	
@@ -23,8 +23,8 @@ function _update()
 	
 	if(btn(⬆️)) then
 		y -= 8
-		if (y <= -16) then
-			y = 112
+		if (y <= 0) then
+			y = 128
 		end
 	end
 	
@@ -38,7 +38,7 @@ end
 
 function _draw()
 	cls(0)
-	rectfill(x, y, x+16, y+16, 8)
+	circfill(x, y, 16, 8)
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
