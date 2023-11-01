@@ -1,6 +1,6 @@
 var config = {
 	// set your channel name between the quotes, ie: "eateren"
-	channel: "fletchmakes",		
+	channel: "TWITCHUSERNAME",		
 
 	// create a list of commands with the following properties:
 	// {
