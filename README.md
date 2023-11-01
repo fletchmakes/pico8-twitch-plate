@@ -2,6 +2,8 @@
 
 A quick and easy way to turn your PICO-8 game into a chat-controlled Twitch community experience!
 
+[Click here for a demo!](https://youtu.be/FZm8pqpwi4o)
+
 ## What is a PICO-8 Plate?
 
 A plate is a paramter that you can provide to PICO-8's `export` command. By specifying the `-p` parameter, you can use a custom HTML shell that will modify the way in which PICO-8's HTML export gets built.
