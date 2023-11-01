@@ -6,7 +6,7 @@ var config = {
 	// {
 	//   name: "NAME-OF-COMMAND",
 	//   button: HEX-BUTTON-VALUE, (0x1 left, 0x2 right, 0x4 up, 0x8 down, 0x10 O, 0x20 X, 0x40 menu)
-	//   duration: NUMBER-OF-MILLISECONDS
+	//   duration: NUMBER-OF-MILLISECONDS (don't go below 34 milliseconds)
 	// }
 	commands: [
 		{

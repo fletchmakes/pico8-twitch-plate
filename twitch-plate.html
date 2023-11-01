@@ -792,57 +792,91 @@
       };
     }
 
-
     // gamepad  https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
     // (sets bits in pico8_buttons[])
+    var twitchChatActionQueue = [];
+    var pressedButtons = 0x0;
     function p8_update_gamepads() {
-      var axis_threshold = 0.3;
-      var button_threshold = 0.5; // Should be unnecessary, we should be able to trust .pressed
-      var max_players = 8;
-      var gps = navigator.getGamepads() || navigator.webkitGetGamepads();
+      // reset to no inputs at the start of this function
+      pico8_buttons[0] = 0x0;
 
-      if (!gps) return;
+      if (twitchChatActionQueue.length > 0) {
+        // peek at the first entry
+        var currentCommand = twitchChatActionQueue[0];
 
-      // In Chrome, gps is iterable but it's not an array.
-      gps = Array.from(gps);
+        if (currentCommand.startMs === -1) {
+          currentCommand.startMs = Date.now();
+        }
 
-      pico8_gamepads.count = gps.length;
-      while (gps.length > pico8_gamepads_mapping.length) {
-        pico8_gamepads_mapping.push(null);
+        // check to see if duration has ended
+        if (Date.now() > currentCommand.startMs + currentCommand.duration) {
+          twitchChatActionQueue.shift();
+          // unpress that pico8 button
+          pico8_buttons[0] &= ~(currentCommand.button);
+        } else {
+          if (currentCommand.press === undefined) {
+            // press that pico8 button
+            pico8_buttons[0] |= currentCommand.button;
+          } else if (currentCommand.press === true) {
+            // hold this button down
+            pressedButtons |= currentCommand.button;
+          } else if (currentCommand.press === false) {
+            // stop holding this button down
+            pressedButtons &= ~(currentCommand.button);
+          }
+        }
       }
 
-      var menu_button = false;
-      var gamepad_states = gps.map(function (gp) {
-        return (gp && gp.mapping == "standard") ?
-          p8_convert_standard_gamepad_to_button_state(gp, axis_threshold, button_threshold) :
-          p8_convert_unmapped_gamepad_to_button_state(gp, axis_threshold, button_threshold);
-      });
+      // add our held down buttons to the evaluation
+      pico8_buttons[0] |= pressedButtons;
 
-      // Unassign disconnected gamepads.
-      // gps.forEach(function (gp, i) { if (gp && !gp.connected) { p8_unassign_gamepad(i); }});
-      gps.forEach(function (gp, i) { if (!gp || !gp.connected) { p8_unassign_gamepad(i); } }); // https://www.lexaloffle.com/bbs/?pid=87132#p
+      // evaluate which buttons are pressed and unpressed, then set the color highlight on each one
+      if ((pico8_buttons[0] & 0x1) > 0) {
+        // highlight
+        document.getElementById("left-button").classList.add("highlight-item");
+      } else {
+        // unhighlight
+        document.getElementById("left-button").classList.remove("highlight-item");
+      }
 
+      if ((pico8_buttons[0] & 0x2) > 0) {
+        // highlight
+        document.getElementById("right-button").classList.add("highlight-item");
+      } else {
+        // unhighlight
+        document.getElementById("right-button").classList.remove("highlight-item");
+      }
 
-      // Assign unassigned gamepads when any button is pressed.
-      gamepad_states.forEach(function (state, i) {
-        if (state.any_button && pico8_gamepads_mapping[i] == null) {
-          var first_free_player = p8_first_player_without_gamepad(max_players);
-          p8_assign_gamepad_to_player(i, first_free_player);
-        }
-      });
+      if ((pico8_buttons[0] & 0x4) > 0) {
+        // highlight
+        document.getElementById("up-button").classList.add("highlight-item");
+      } else {
+        // unhighlight
+        document.getElementById("up-button").classList.remove("highlight-item");
+      }
 
-      // Update pico8_buttons array.
-      gamepad_states.forEach(function (gamepad_state, i) {
-        if (pico8_gamepads_mapping[i] != null) {
-          pico8_buttons[pico8_gamepads_mapping[i]] = gamepad_state.button_state;
-        }
-      });
+      if ((pico8_buttons[0] & 0x8) > 0) {
+        // highlight
+        document.getElementById("down-button").classList.add("highlight-item");
+      } else {
+        // unhighlight
+        document.getElementById("down-button").classList.remove("highlight-item");
+      }
 
-      // Update menu button.
-      // Pico 8 only recognises the menu button on the first player, so we
-      // press it when any gamepad has pressed a button mapped to menu.
-      if (gamepad_states.some(function (state) { return state.menu_button; })) {
-        pico8_buttons[0] |= 0x40;
+      if ((pico8_buttons[0] & 0x10) > 0) {
+        // highlight
+        document.getElementById("o-button").classList.add("highlight-item");
+      } else {
+        // unhighlight
+        document.getElementById("o-button").classList.remove("highlight-item");
+      }
+
+      if ((pico8_buttons[0] & 0x20) > 0) {
+        // highlight
+        document.getElementById("x-button").classList.add("highlight-item");
+      } else {
+        // unhighlight
+        document.getElementById("x-button").classList.remove("highlight-item");
       }
 
       requestAnimationFrame(p8_update_gamepads);
@@ -965,7 +999,7 @@
 
 </head>
 
-<body style="padding:0px; margin:0px; background-color:#00000000; color:#ccc">
+<body style="padding:0px; margin:0px; background-color:#2e2e2e; color:#ccc">
   <div id="body_0"> <!-- hide this when playing in mobile (p8_touch_detected) so that elements don't affect layout -->
 
 
@@ -1079,10 +1113,25 @@
       // ---------------------------------------------
       ComfyJS.onCommand = (user, command, message, flags, extra) => {
         var c = config.commands.find(obj => obj.name == command);
-        console.log(c);
         if (c !== undefined) {
-          pico8_buttons[0] |= c.button;
-          setTimeout(() => { pico8_buttons[0] &= ~(c.button) }, c.duration);
+          // is the button being held down?
+          var press = undefined;
+          if (message !== undefined) {
+            if (message.toLowerCase() === "press") {
+              press = true
+            } else if (message.toLowerCase() === "unpress") {
+              press = false
+            }
+          }
+
+          twitchChatActionQueue.push({
+            name: c.name,
+            button: c.button,
+            duration: c.duration,
+            startMs: -1,
+            user: user,
+            press: press
+          });
         }
       }
       ComfyJS.Init(config.channel);
@@ -1097,11 +1146,89 @@
 
 
     <!-- Add content below the cart here -->
+    <!-- PICO-8 BUTTON OVERLAY -->
+    <div class="grid">
+      <div class="empty-grid-item row-1 col-1"></div>
+      <div id="up-button" class="grid-item row-1 col-2">&#8593;</div>
+      <div class="empty-grid-item row-1 col-3"></div>
+      <div class="empty-grid-item row-1 col-4"></div>
+      <div id="o-button" class="grid-item row-1 col-5">O</div>
+      <div id="left-button" class="grid-item row-2 col-1">&#8592;</div>
+      <div id="down-button" class="grid-item row-2 col-2">&#8595;</div>
+      <div id="right-button" class="grid-item row-2 col-3">&#8594;</div>
+      <div class="empty-grid-item row-2 col-4"></div>
+      <div id="x-button" class="grid-item row-2 col-5">X</div>
+    </div>
 
-
-
-
-  </div> <!-- body_0 -->
+    </div> <!-- body_0 -->
 </body>
+
+<style>
+  .grid-item {
+    width: 75px;
+    height: 75px;
+    border-style: solid;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 75px;
+    font-size: xx-large;
+  }
+
+  .empty-grid-item {
+    width: 75px;
+    height: 75px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 75px;
+  }
+
+  .grid {
+    display: grid;
+    width: 415px;
+    height: 160px;
+    column-gap: 10px;
+    row-gap: 10px;
+    margin: auto;
+  }
+
+  .row-1 {
+    grid-row-start: 1;
+    grid-row-end: 1;
+  }
+
+  .row-2 {
+    grid-row-start: 2;
+    grid-row-end: 2;
+  }
+
+  .col-1 {
+    grid-column-start: 1;
+    grid-column-end: 1;
+  }
+
+  .col-2 {
+    grid-column-start: 2;
+    grid-column-end: 2;
+  }
+
+  .col-3 {
+    grid-column-start: 3;
+    grid-column-end: 3;
+  }
+
+  .col-4 {
+    grid-column-start: 4;
+    grid-column-end: 4;
+  }
+
+  .col-5 {
+    grid-column-start: 5;
+    grid-column-end: 5;
+  }
+
+  .highlight-item {
+    background-color: rgb(240, 165, 25);
+  }
+</style>
 
 </html>

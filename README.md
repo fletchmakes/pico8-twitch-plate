@@ -29,7 +29,13 @@ This HTML plate changes the following:
         - "button": this is the hex value of the button(s) you'd like to be considered as pressed
         - "duration": how long (in milliseconds) to press the button before releasing it
 6. Test your configuration by opening your game's `.html` file locally in your browser, then in another window, open your Twitch chat and type some commands in. See if the game responds to those commands as expected.
-7. Finally, add your `.html` file as a Browser Source in OBS to have the game available without requiring a browser window open while you stream!
+7. Finally, add your `.html` file as a Browser Source in OBS to have the game available without requiring a browser window open while you stream! Recommended settings:
+    - Width: 600
+    - Height: 800 (this is not a typo - it should be taller than wide)
+    - Control audio via OBS (checked)
+    - Shutdown source when not visible (checked)
+    - Refresh browser when scene becomes active (checked)
+    - Page permissions: No access to OBS
 
 ## Attributions
 
