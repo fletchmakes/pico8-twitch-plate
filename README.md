@@ -10,8 +10,8 @@ A plate is a paramter that you can provide to PICO-8's `export` command. By spec
 
 This HTML plate changes the following:
 - removes the PICO-8 browser controls from the right side of the canvas
-- makes the background transparent so that the game (as a .html file) can be added as a browser source to OBS
 - adds the necessary controllers to receive Twitch chat inputs and interpret them as PICO-8 button presses
+- adds a gamepad UI to display which buttons are being pressed by Twitch chat
 - Twitch chatters can use the keywords "press" and "unpress" to hold down (or stop holding down) those buttons, i.e. `!d press`
 
 ## Setup
