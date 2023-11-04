@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, user-scalable=no">
   <!-- injected files to assist with connection to Twitch -->
   <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
+  <script src="https://kit.fontawesome.com/8803d060db.js" crossorigin="anonymous"></script>
   <script src="config.js"></script>
 
   <script type="text/javascript">
@@ -1143,21 +1144,19 @@
 
     </script>
 
-
-
     <!-- Add content below the cart here -->
     <!-- PICO-8 BUTTON OVERLAY -->
     <div class="grid">
       <div class="empty-grid-item row-1 col-1"></div>
-      <div id="up-button" class="grid-item row-1 col-2">&#8593;</div>
+      <div id="up-button" class="grid-item row-1 col-2"><i class="fa-solid fa-circle-arrow-up"></i></span></div>
       <div class="empty-grid-item row-1 col-3"></div>
       <div class="empty-grid-item row-1 col-4"></div>
-      <div id="o-button" class="grid-item row-1 col-5">O</div>
-      <div id="left-button" class="grid-item row-2 col-1">&#8592;</div>
-      <div id="down-button" class="grid-item row-2 col-2">&#8595;</div>
-      <div id="right-button" class="grid-item row-2 col-3">&#8594;</div>
+      <div id="o-button" class="grid-item row-1 col-5"><i class="fa-solid fa-o"></i></div>
+      <div id="left-button" class="grid-item row-2 col-1"><i class="fa-solid fa-circle-arrow-left"></i></span></div>
+      <div id="down-button" class="grid-item row-2 col-2"><i class="fa-solid fa-circle-arrow-down"></i></span></div>
+      <div id="right-button" class="grid-item row-2 col-3"><i class="fa-solid fa-circle-arrow-right"></i></div>
       <div class="empty-grid-item row-2 col-4"></div>
-      <div id="x-button" class="grid-item row-2 col-5">X</div>
+      <div id="x-button" class="grid-item row-2 col-5"><i class="fa-solid fa-x"></i></div>
     </div>
 
     </div> <!-- body_0 -->
@@ -1167,11 +1166,17 @@
   .grid-item {
     width: 75px;
     height: 75px;
-    border-style: solid;
+    border: solid;
+    border-radius: 50%;
     text-align: center;
     vertical-align: middle;
     line-height: 75px;
     font-size: xx-large;
+  }
+
+  i {
+    margin-top: 20px;
+    display: block;
   }
 
   .empty-grid-item {
@@ -1227,7 +1232,7 @@
   }
 
   .highlight-item {
-    background-color: rgb(240, 165, 25);
+    background-color: rgb(144, 70, 255);
   }
 </style>
 
